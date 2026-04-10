@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
+import CoinChart from '../components/CoinChart';
 
 const API_URL = import.meta.env.VITE_COIN_API_URL;
 
@@ -51,7 +52,7 @@ const CoinDetailsPage: React.FC = () => {
       {loading && <p>Loading...</p>}
       {error && <div className="error">{error}</div>}
 
-      {!loading && !error && (
+      {!loading && !error && coin && (
         <>
           <img
             src={coin?.image?.large}
@@ -86,6 +87,8 @@ const CoinDetailsPage: React.FC = () => {
                 : 'N/A'}
             </h3>
           </div>
+
+          <CoinChart coinId={coin!.id!} />
         </>
       )}
     </div>
