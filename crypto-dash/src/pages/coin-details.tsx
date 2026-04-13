@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
+import CoinChart from '../components/CoinChart';
 import Spinner from '../components/Spinner';
 
 const API_BASE_URL = import.meta.env.VITE_COINGECKO_API_BASE_URL;
@@ -54,7 +55,7 @@ const CoinDetailsPage: React.FC = () => {
       {loading && <Spinner color="yellow" />}
       {error && <div className="error">{error}</div>}
 
-      {!loading && !error && (
+      {!loading && !error && coin && (
         <>
           <img
             src={coin?.image?.large}
@@ -121,6 +122,8 @@ const CoinDetailsPage: React.FC = () => {
               </p>
             )}
           </div>
+
+          <CoinChart coinId={coin.id} />
         </>
       )}
       {!loading && !error && !coin && <div>No data found</div>}
