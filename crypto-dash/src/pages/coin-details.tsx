@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router';
+import Spinner from '../components/Spinner';
 
-const API_URL = import.meta.env.VITE_COIN_API_URL;
+const API_BASE_URL = import.meta.env.VITE_COINGECKO_API_BASE_URL;
 
 interface CoinDetails {
   id: string;
@@ -12,6 +13,8 @@ interface CoinDetails {
   market_cap_rank?: number | null;
   current_price?: number;
   market_data?: { market_cap?: { usd?: number } };
+  links?: { homepage?: string[]; blockchain_links?: string[] };
+  categories?: string[];
 }
 
 const CoinDetailsPage: React.FC = () => {
@@ -23,7 +26,7 @@ const CoinDetailsPage: React.FC = () => {
   useEffect(() => {
     const fetchCoinDetails = async () => {
       try {
-        const response = await fetch(`${API_URL}/${id}`);
+        const response = await fetch(`${API_BASE_URL}/coins/${id}`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -45,10 +48,10 @@ const CoinDetailsPage: React.FC = () => {
     <div className="coin-details-container">
       <Link to="/">Back to Home</Link>
       <h1 className="coin-details-title">
-        {coin ? `${coin.name} (${coin.symbol})` : 'Loading...'}
+        {coin ? `${coin.name} (${coin.symbol.toUpperCase()})` : 'Loading...'}
       </h1>
 
-      {loading && <p>Loading...</p>}
+      {loading && <Spinner color="yellow" />}
       {error && <div className="error">{error}</div>}
 
       {!loading && !error && (
@@ -86,8 +89,41 @@ const CoinDetailsPage: React.FC = () => {
                 : 'N/A'}
             </h3>
           </div>
+          <div className="coin-details-links">
+            {coin?.links?.homepage?.[0] && (
+              <p>
+                <a
+                  href={coin?.links?.homepage?.[0]}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Official Website
+                </a>
+              </p>
+            )}
+            {coin?.links?.blockchain_links?.[0] && (
+              <p>
+                <a
+                  href={coin?.links?.blockchain_links?.[0]}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Blockchain Explorer
+                </a>
+              </p>
+            )}
+            {(coin?.categories?.length ?? 0) > 0 && (
+              <p>
+                <span className="coin-label">Categories:</span>
+                {coin?.categories?.map((category) => (
+                  <span key={category}>{category}</span>
+                ))}
+              </p>
+            )}
+          </div>
         </>
       )}
+      {!loading && !error && !coin && <div>No data found</div>}
     </div>
   );
 };

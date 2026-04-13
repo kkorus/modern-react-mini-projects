@@ -6,7 +6,7 @@ import AboutPage from './pages/about';
 import NotFoundPage from './pages/not-found';
 import CoinDetailsPage from './pages/coin-details';
 
-const API_URL = import.meta.env.VITE_COINS_API_URL;
+const API_BASE_URL = import.meta.env.VITE_COINGECKO_API_BASE_URL;
 
 export interface Coin {
   price_change_percentage_24h: number | null;
@@ -34,7 +34,7 @@ const App: React.FC = () => {
       setLoading(true);
       try {
         const response = await fetch(
-          `${API_URL}&order=${sortBy}&per_page=${limit}&page=1&sparkline=false`,
+          `${API_BASE_URL}/coins/markets?vs_currency=usd&order=${sortBy}&per_page=${limit}&page=1&sparkline=false`,
         );
         if (!response.ok) {
           throw new Error('Network response was not ok');
